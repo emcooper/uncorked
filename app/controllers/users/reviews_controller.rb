@@ -1,15 +1,19 @@
 class Users::ReviewsController < ApplicationController
   def new
-    session[:return_to] = request.referer
+    # session[:return_to] = request.referer
+    if params["reviewable_type"] == "wines"
+      wine = Wine.find_or_create_by(code: params[:wine_data][:code]) do |wine|
+        wine.name = params[:wine_data][:name]
+      end
+    end
+    params[:reviewable_id] = wine.id
     @review = Review.new
   end
 
   def create
-    reviewable = params["review"]
+    reviewable = review_params
     if reviewable["reviewable_type"] == "wines"
-      wine = Wine.find_or_create_by(code: reviewable["reviewable_id"]["code"] ) do |wine|
-        wine.name = reviewable["reviewable_id"]["name"]
-      end
+      wine  = Wine.find(reviewable["reviewable_id"])
       review = wine.reviews.create(review_params)
     else
       venue  = Venue.find(reviewable["reviewable_id"])
@@ -27,6 +31,6 @@ class Users::ReviewsController < ApplicationController
 
   private
     def review_params
-      params.require(:review).permit(:description, :rating, :user_id, :reviewable_params, :reviewable_id, :reviewable_type)
+      params.require(:review).permit(:description, :rating, :user_id, :reviewable_id, :reviewable_type)
     end
 end
