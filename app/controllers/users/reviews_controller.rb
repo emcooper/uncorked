@@ -1,12 +1,12 @@
 class Users::ReviewsController < ApplicationController
   def new
-    # session[:return_to] = request.referer
     if params["reviewable_type"] == "wines"
       wine = Wine.find_or_create_by(code: params[:wine_data][:code]) do |wine|
         wine.name = params[:wine_data][:name]
       end
+      params[:reviewable_id] = wine.id
     end
-    params[:reviewable_id] = wine.id
+    session[:return_to] = request.referer
     @review = Review.new
   end
 
