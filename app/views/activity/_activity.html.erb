@@ -6,13 +6,14 @@
   <% end %>
 </span>
 <p><%= "#{activity['verb']}ed" %>
-  <% if activity["wine"] && activity["wine"]["code"] %>
+  <% if activity['object'].class == Wine %>
   <%= link_to activity['object'].name, send("#{activity['object'].class.to_s.downcase}_path", activity['object'].code) %>
-  <% elsif activity["venue"] && activity["venue"]["id"] %>
+  <% else %>
+    <%= link_to activity['object'].name, send("#{activity['object'].class.to_s.downcase}_path", activity['object']) %>
+  <% end %>
+  <% if activity["venue"] && activity["venue"]["id"] %>
   at
   <%= link_to activity["venue"]["name"], venue_path(activity["venue"]["id"]) %><br/>
-<% else %>
-  <%= link_to activity['object'].name, send("#{activity['object'].class.to_s.downcase}_path", activity['object']) %>
   <% end %>
   <% if activity['verb'] == 'review' %>
   <ul>

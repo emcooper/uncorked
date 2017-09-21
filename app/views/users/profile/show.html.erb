@@ -33,7 +33,7 @@
     <div class="white-div col m3 s12 center-align">
       <h5>Wines You Follow</h5>
       <% current_user.followed_wines.each do |wine| %>
-        <p><%= link_to wine.name, wine_path(wine) %></p>
+        <p><%= link_to wine.name, wine_path(wine.code) %></p>
       <% end %>
     </div>
     <div class="white-div col m3 s12 center-align">
