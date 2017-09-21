@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   root to: "home#show"
-
+  get "/new_suggestion", to: "suggestions#new"
   get "users/verify", to: 'users#show_verify', as: 'verify'
   post "users/verify"
   post "users/resend"
