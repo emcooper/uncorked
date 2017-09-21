@@ -1,13 +1,19 @@
 class Users::ReviewsController < ApplicationController
   def new
+    if params["reviewable_type"] == "wines"
+      wine = Wine.find_or_create_by(code: params[:wine_data][:code]) do |wine|
+        wine.name = params[:wine_data][:name]
+      end
+      params[:reviewable_id] = wine.id
+    end
     session[:return_to] = request.referer
     @new_review_presenter = NewReviewPresenter.new
   end
 
   def create
-    reviewable = params["review"]
+    reviewable = review_params
     if reviewable["reviewable_type"] == "wines"
-      wine = Wine.find(reviewable["reviewable_id"])
+      wine  = Wine.find(reviewable["reviewable_id"])
       review = wine.reviews.create(review_params)
       wine.venues << Venue.find(review_params["venue_id"]) if review_params["venue_id"]
     else

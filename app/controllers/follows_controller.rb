@@ -4,12 +4,16 @@ class FollowsController < ApplicationController
     case params[:target_type]
     when "Venue"
       target = Venue.find(params[:target_id])
+      create_follow(target)
     when "Wine"
-      target = Wine.find(params[:target_id])
+      create_wine_follow
     when "User"
       target = User.find(params[:target_id])
+      create_follow(target)
     end
+  end
 
+  def create_follow(target)
     follow = current_user.follows.new(target: target)
     if follow.save
       follow.report_follow
@@ -19,8 +23,21 @@ class FollowsController < ApplicationController
     end
   end
 
+  def create_wine_follow
+    target = Wine.find_or_create_by(code: params[:target_params][:code]) do |wine|
+      wine.name = params[:target_params][:name]
+    end
+    follow = current_user.follows.new(target: target)
+    if follow.save
+      follow.report_follow
+      redirect_to wine_path(target.code), success: "#{follow_params[:target_type]} successfully followed!"
+    else
+      redirect_to wine_path(target.code), warning: "There was a problem! #{follow_params[:target_type]} was not followed!"
+    end
+  end
+
   def destroy
-    follow = Follow.find(params[:id])
+    follow = Follow.find_by(id: params[:id])
     session[:return_to] ||= request.referer
     if follow.user_id == current_user.id
       follow.report_unfollow

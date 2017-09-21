@@ -1,8 +1,7 @@
 class Wine < ApplicationRecord
   include ReviewRatingsModule
 
-  validates_presence_of :name, :vintage, :rating
-  validates_uniqueness_of :name
+  validates_presence_of :name, :code
 
   has_many :venue_wines
   has_many :venues, through: :venue_wines

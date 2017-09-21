@@ -104,14 +104,9 @@ ActiveRecord::Schema.define(version: 20170918204552) do
 
   create_table "wines", force: :cascade do |t|
     t.string "name"
-    t.string "varietal"
-    t.string "vintage"
-    t.string "vineyard"
-    t.integer "rating"
-    t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_wines_on_name"
+    t.string "code"
   end
 
   add_foreign_key "follows", "users"

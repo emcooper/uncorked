@@ -4,20 +4,17 @@ RSpec.feature "user wants to review..."  do
   context "a wine" do
     context "when logged in" do
       let(:user) { create(:user) }
-      let!(:wine) { create_list(:wine, 3)}
       it "user can review wine in the DB" do
         allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+
         venue_1, venue_2, venue_3 = create_list(:venue, 3)
-        test_wine = Wine.first
 
         visit wines_path
-        page.assert_selector('.wine', :count => 3)
+        page.assert_selector('.wine', :count => 30)
 
-        within '.wines' do
-          click_on test_wine.name
-        end
+        click_on "Olmaia Cabernet di Toscana"
 
-        expect(current_path).to eq(wine_path(test_wine))
+        expect(current_path).to eq(wine_path("olmaia-cabernet-di-toscana"))
 
         click_link "Review"
 
@@ -25,14 +22,13 @@ RSpec.feature "user wants to review..."  do
         fill_in "Description", with: "Nice tannins"
         fill_in "Rating", with: 9
         click_button "Create Review"
-        expect(current_path).to eq(wine_path(test_wine))
+        expect(current_path).to eq(wine_path("olmaia-cabernet-di-toscana"))
       end
     end
 
     context "when not logged in" do
-      let!(:wine) { create(:wine)}
       it "user is redirected to login" do
-          visit wine_path(wine)
+          visit wine_path("olmaia-cabernet-di-toscana")
 
           expect(page).not_to have_content("Review")
       end
@@ -63,7 +59,7 @@ RSpec.feature "user wants to review..."  do
         fill_in "Description", with: "Nice wines"
         fill_in "Rating", with: 9
         click_button "Create Review"
-        # expect(page).to have_content("Review successfully submitted!")
+
         expected_review = test_venue.reviews.last.description
 
         expect(page).to have_content(expected_review)
@@ -80,5 +76,4 @@ RSpec.feature "user wants to review..."  do
       end
     end
   end
-
 end
