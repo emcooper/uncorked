@@ -19,7 +19,7 @@ RSpec.feature 'user wants to follow a wine' do
       expect(page).to have_link("Follow Wine")
 
       click_on("Follow Wine")
-      expect(current_path).to eq(wine_path(@wine))
+      expect(current_path).to eq(wine_path(@wine.code))
 
       visit wine_path(@wine.code)
 

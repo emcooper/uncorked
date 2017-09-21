@@ -4,12 +4,12 @@ class FollowsController < ApplicationController
     case params[:target_type]
     when "Venue"
       target = Venue.find(params[:target_id])
-      creat_follow(target)
+      create_follow(target)
     when "Wine"
       create_wine_follow
     when "User"
       target = User.find(params[:target_id])
-      creat_follow(target)
+      create_follow(target)
     end
   end
 
